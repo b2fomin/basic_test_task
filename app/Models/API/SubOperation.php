@@ -10,4 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SubOperation extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
+
+    public function operation() {
+        return $this->belongsTo(Operation::class);
+    }
 }

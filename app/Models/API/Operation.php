@@ -10,4 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Operation extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
+
+    public function sub_operations() {
+        return $this->hasMany(SubOperation::class);
+    }
 }
