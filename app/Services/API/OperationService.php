@@ -13,4 +13,13 @@ class OperationService {
             'number' => 1]);
         $sub_operation->delete();
     }
+
+    public function update($operation, $data) {
+        $operation->update($data);
+    }
+
+    public function delete($operation) {
+        $operation->sub_operations()->delete();
+        $operation->delete();
+    }
 }
