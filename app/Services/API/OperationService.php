@@ -18,8 +18,14 @@ class OperationService {
         $operation->update($data);
     }
 
-    public function delete($operation) {
-        $operation->sub_operations()->delete();
-        $operation->delete();
+    public function delete($operation, $force_delete) {
+        if ($force_delete) {
+            $operation->sub_operations()->forceDelete();
+            $operation->forceDelete();
+        }
+        else {
+            $operation->sub_operations()->delete();
+            $operation->delete();
+        }
     }
 }

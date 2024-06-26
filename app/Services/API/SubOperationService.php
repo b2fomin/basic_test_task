@@ -15,11 +15,23 @@ class SubOperationService {
         $sub_operation->update($data);
     }
 
-    public function delete($sub_operation) {
+    public function delete($sub_operation, $force_delete) {
+        $number = $sub_operation->number;
         $operation = $sub_operation->operation();
-        $sub_operation->delete();
-        if (!SubOperation::where('operation_id', $operation->id)->exists()) {
-            $operation->delete();
+        if ($force_delete)
+            $sub_operation->forceDelete();
+        else 
+            $sub_operation->delete();
+
+        $all_sub_operations = SubOperation::withTrashed()->where('operation_id', $operation->id);
+        if (!$all_sub_operations->exists()) {
+            $operation->forceDelete();
+        }
+        else {
+            foreach($all_sub_operations as $row) {
+                if ($row->number > $number)
+                    --$row->number;
+            }
         }
     }
 }
