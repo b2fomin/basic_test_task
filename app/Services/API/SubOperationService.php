@@ -28,6 +28,10 @@ class SubOperationService {
             $operation->forceDelete();
         }
         else {
+            if ($all_sub_operations->trashed()) {
+                $operation->delete();
+            }
+
             foreach($all_sub_operations as $row) {
                 if ($row->number > $number)
                     --$row->number;
