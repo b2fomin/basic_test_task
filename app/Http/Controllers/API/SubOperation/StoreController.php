@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\API\Operation;
+namespace App\Http\Controllers\API\SubOperation;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Operation\StoreRequest;
+use App\Http\Requests\API\SubOperation\StoreRequest;
 use App\Http\Resources\API\SuccessResource;
 use Illuminate\Http\Request;
 
 class StoreController extends BaseController
 {
     public function __invoke(StoreRequest $request) {
-        
         $data = $request->validated();
         try {
         $this->service->store($data);
