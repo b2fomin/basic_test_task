@@ -6,7 +6,7 @@ namespace App\Http\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class OperationFilter extends AbstractFilter
+class SubOperationFilter extends AbstractFilter
 {
     protected function getCallbacks(): array
     {
@@ -14,6 +14,7 @@ class OperationFilter extends AbstractFilter
             'id' => [$this, 'id'],
             'name' => [$this, 'name'],
             'number' => [$this, 'number'],
+            '$operation_id' => [$this, 'operation_id'],
             'created_at' => [$this, 'created_at'],
             'updated_at' => [$this, 'updated_at'],
 
@@ -23,7 +24,11 @@ class OperationFilter extends AbstractFilter
     public function id(Builder $builder, $value) {
         $builder->find($value);
     }
-    
+
+    public function operation_id(Builder $builder, $value) {
+        $builder->where("operation_id", $value);   
+    }
+
     public function name(Builder $builder, $value) {
         $builder->where("name", "like", "%{$value}%");
     }
