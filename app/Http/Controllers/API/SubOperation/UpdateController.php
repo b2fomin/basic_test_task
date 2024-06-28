@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\API\Operation;
+namespace App\Http\Controllers\API\SubOperation;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\Operation\UpdateRequest;
+use App\Http\Requests\API\SubOperation\UpdateRequest;
 use App\Http\Resources\API\SuccessResource;
-use App\Models\API\Operation;
+use App\Models\API\SubOperation;
 use Illuminate\Http\Request;
 
 class UpdateController extends BaseController
@@ -13,7 +13,7 @@ class UpdateController extends BaseController
     public function __invoke(UpdateRequest $request) {
         $data = $request->validated();
 
-        $operations = Operation::find($data['id']);
+        $operations = SubOperation::find($data['id']);
         unset($data['id']);
         
         try {
