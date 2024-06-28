@@ -4,7 +4,7 @@ namespace App\Http\Requests\API\Operation;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRequest extends FormRequest
+class DestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'id' => 'uuid|required',
-            'name' => 'string|required',
+            'force_delete' => 'boolean|required',
         ];
     }
 }

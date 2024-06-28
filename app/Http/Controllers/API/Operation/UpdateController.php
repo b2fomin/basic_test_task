@@ -10,10 +10,14 @@ use Illuminate\Http\Request;
 
 class UpdateController extends BaseController
 {
-    public function __invoke(UpdateRequest $request, Operation $operation) {
+    public function __invoke(UpdateRequest $request) {
         $data = $request->validated();
+
+        $operations = Operation::find($data['id']);
+        unset($data['id']);
+        
         try {
-            $this->service->update($operation, $data);
+            $this->service->update($operations, $data);
             return new SuccessResource([]);
         } catch (\Exception $e) {
             return new SuccessResource(['err_msg'=> $e->getMessage()]);
