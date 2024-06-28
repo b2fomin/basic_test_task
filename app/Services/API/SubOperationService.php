@@ -8,7 +8,7 @@ use App\Models\API\Operation;
 class SubOperationService {
     public function store($data) {
         $data['number'] = SubOperation::where('operation_id', '=', $data['operation_id'])->max('number') + 1;
-        SubOperation::create($data);
+        SubOperation::createOrFirst($data);
     }
 
     public function update($sub_operation, $data) {

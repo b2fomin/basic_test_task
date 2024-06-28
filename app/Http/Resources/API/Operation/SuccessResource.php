@@ -14,10 +14,10 @@ class SuccessResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if (!is_null($this->resource['err_msg'])) {
+        if (isset($this->resource['err_msg'])) {
             return [
                 'success' => false,
-                'msg' => $this->resource['err_msg'],
+                'err_msg' => $this->resource['err_msg'],
             ];
         } else {
             return [

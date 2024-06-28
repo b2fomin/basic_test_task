@@ -6,7 +6,7 @@ use App\Models\API\Operation;
 
 class OperationService {
     public function store($data) {
-        $operation = Operation::create($data);
+        $operation = Operation::createOrFirst($data);
         $sub_operation = $operation->sub_operations()->create([
             'operation_id' => $operation->id,
             'name' => 'null',
