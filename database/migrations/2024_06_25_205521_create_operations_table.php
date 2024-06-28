@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('operations', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->unsignedBigInteger('number')->index()->unique();
+            $table->unsignedBigInteger('number')->index()->unique()->autoIncrement();
             $table->string('name');
 
             $table->timestamps();

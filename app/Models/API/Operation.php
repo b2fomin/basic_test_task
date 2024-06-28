@@ -12,6 +12,8 @@ class Operation extends Model
 {
     use HasFactory, SoftDeletes, HasUuids, Filterable;
 
+    protected $guarded = false;
+
     public function sub_operations() {
         return $this->hasMany(SubOperation::class);
     }

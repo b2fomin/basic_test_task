@@ -22,6 +22,7 @@ class IndexRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'uuid',
             'name' => 'string',
             'number' => 'integer',
             'created_at_before' => 'date',
