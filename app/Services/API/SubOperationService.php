@@ -38,4 +38,15 @@ class SubOperationService {
             }
         }
     }
+
+    public function clear($force_delete) {
+        if ($force_delete) {
+            SubOperation::withTrashed()->operation()->forceDelete();
+            SubOperation::withTrashed()->forceDelete();
+        }
+        else {
+            SubOperation::all()->operations()->delete();
+            SubOperation::delete();
+        }
+    }
 }

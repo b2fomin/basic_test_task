@@ -28,4 +28,16 @@ class OperationService {
             $operation->delete();
         }
     }
+
+    public function clear($force_delete) {
+        if ($force_delete) {
+            Operation::withTrashed()->subOperations()->forceDelete();
+            Operation::withTrashed()->forceDelete();
+        }
+        else {
+            
+            Operation::all()->subOperations()->delete();
+            Operation::delete();
+        }
+    }
 }
