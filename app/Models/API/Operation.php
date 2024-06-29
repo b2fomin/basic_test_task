@@ -14,7 +14,7 @@ class Operation extends Model
 
     protected $guarded = false;
 
-    public function sub_operations() {
+    public function subOperations() {
         return $this->hasMany(SubOperation::class);
     }
 }

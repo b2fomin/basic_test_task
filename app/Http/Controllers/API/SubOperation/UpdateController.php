@@ -13,11 +13,11 @@ class UpdateController extends BaseController
     public function __invoke(UpdateRequest $request) {
         $data = $request->validated();
 
-        $sub_operations = SubOperation::find($data['id']);
+        $subOperations = SubOperation::find($data['id']);
         unset($data['id']);
         
         try {
-            $this->service->update($sub_operations, $data);
+            $this->service->update($subOperations, $data);
             return new SuccessResource([]);
         } catch (\Exception $e) {
             return new SuccessResource(['err_msg'=> $e->getMessage()]);

@@ -16,8 +16,13 @@ class OperationFactory extends Factory
      */
     public function definition(): array
     {
+        $name = '';
+        for ($i = 0; $i < rand(4, 10); ++$i) {
+            $name .= $this->faker->randomLetter();
+        }
+
         return [
-            'name' => $this->faker->words(2, true),
+            'name' => $name,
         ];
     }
 }

@@ -25,9 +25,14 @@ class SubOperationFactory extends Factory
             $number = $sub_op_where->max('number') + 1;
         }
 
+        $name = '';
+        for ($i = 0; $i < rand(4, 10); ++$i) {
+            $name .= $this->faker->randomLetter();
+        }
+
         return [
             'operation_id' => $operation_id,
-            'name' => $this->faker->words(2, true),
+            'name' => $name,
             'number' => $number,
         ];
     }

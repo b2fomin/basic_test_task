@@ -7,7 +7,7 @@ use App\Models\API\Operation;
 class OperationService {
     public function store($data) {
         $operation = Operation::createOrFirst($data);
-        $sub_operation = $operation->sub_operations()->create([
+        $sub_operation = $operation->subOperations()->create([
             'operation_id' => $operation->id,
             'name' => 'null',
             'number' => 1]);
@@ -20,11 +20,11 @@ class OperationService {
 
     public function delete($operation, $force_delete) {
         if ($force_delete) {
-            $operation->sub_operations()->forceDelete();
+            $operation->subOperations()->forceDelete();
             $operation->forceDelete();
         }
         else {
-            $operation->sub_operations()->delete();
+            $operation->subOperations()->delete();
             $operation->delete();
         }
     }

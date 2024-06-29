@@ -26,8 +26,8 @@ class IndexController extends BaseController
 
         $filter = app()->make(SubOperationFilter::class, ['queryParams' => array_filter($data)]);
 
-        $sub_operations = SubOperation::filter($filter)->paginate($per_page, ['*'], 'page', $page);
+        $subOperations = SubOperation::filter($filter)->paginate($per_page, ['*'], 'page', $page);
 
-        return IndexResource::collection($sub_operations);
+        return IndexResource::collection($subOperations);
     }
 }
