@@ -16,13 +16,8 @@ class OperationFactory extends Factory
      */
     public function definition(): array
     {
-        $name = '';
-        for ($i = 0; $i < rand(4, 10); ++$i) {
-            $name .= $this->faker->randomLetter();
-        }
-
         return [
-            'name' => $name,
+            'name' => $this->faker->regexify("[A-Za-z]".'{'. rand(4, 10) . '}'),
         ];
     }
 }

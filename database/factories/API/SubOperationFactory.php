@@ -18,22 +18,8 @@ class SubOperationFactory extends Factory
      */
     public function definition(): array
     {
-        $operation_id = Operation::inRandomOrder()->first()['id'];
-        $sub_op_where = SubOperation::withTrashed()->where('operation_id', $operation_id);
-        $number = 1;
-        if ($sub_op_where->exists()) {
-            $number = $sub_op_where->max('number') + 1;
-        }
-
-        $name = '';
-        for ($i = 0; $i < rand(4, 10); ++$i) {
-            $name .= $this->faker->randomLetter();
-        }
-
         return [
-            'operation_id' => $operation_id,
-            'name' => $name,
-            'number' => $number,
+            'name' => $this->faker->regexify("[A-Za-z]".'{'. rand(4, 10) . '}'),
         ];
     }
 }

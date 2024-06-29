@@ -14,6 +14,6 @@ class OperationSeeder extends Seeder
      */
     public function run(): void
     {
-        Operation::factory(10**5)->hasSubOperations(rand(1, 10))->create();
+        Operation::factory(10**4)->create();
     }
 }
