@@ -11,8 +11,8 @@ Route::prefix('/v1')->group(function () {
     Route::patch('/operations', Operation_ns\UpdateController::class);
     Route::delete('/operations', Operation_ns\DestroyController::class);
 
-    Route::get('/subOperations', SubOperation_ns\IndexController::class);
-    Route::post('/subOperations', SubOperation_ns\StoreController::class);
-    Route::patch('/subOperations', SubOperation_ns\UpdateController::class);
-    Route::delete('/subOperations', SubOperation_ns\DestroyController::class);
+    Route::get('/sub_operations', SubOperation_ns\IndexController::class);
+    Route::post('/sub_operations', SubOperation_ns\StoreController::class);
+    Route::patch('/sub_operations', SubOperation_ns\UpdateController::class);
+    Route::delete('/sub_operations', SubOperation_ns\DestroyController::class);
 });
