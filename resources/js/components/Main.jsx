@@ -17,16 +17,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import Table from './Table';
+import StorageIcon from '@mui/icons-material/Storage';
 import {
   createBrowserRouter,
+  Link,
   RouterProvider,
   useLocation
 } from 'react-router-dom';
 
 const drawerWidth = 240;
+
+const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -93,7 +95,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function MiniDrawer() {
+export default function MiniDrawer({model}) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = Number(query.get('page'));
@@ -127,7 +129,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {model}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -139,7 +141,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          {['operations', 'subOperations'].map((text, _) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -147,6 +149,8 @@ export default function MiniDrawer() {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
+                component={Link}
+                to={`/${camelToSnakeCase(text)}`}
               >
                 <ListItemIcon
                   sx={{
@@ -155,7 +159,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <StorageIcon />
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -163,34 +167,10 @@ export default function MiniDrawer() {
           ))}
         </List>
         <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <Table page={page} perPage={perPage}/>
+        <Table page={page} perPage={perPage} model={model}/>
       </Box>
     </Box>
   );
@@ -201,7 +181,11 @@ if (document.getElementById('example')) {
     const router = createBrowserRouter([
       {
           path: '/operations',
-          element: <MiniDrawer title="My app"/>,
+          element: <MiniDrawer model="operations"/>,
+      },
+      {
+        path: '/sub_operations',
+          element: <MiniDrawer model="sub_operations"/>,
       },
     ]);
     Index.render(
