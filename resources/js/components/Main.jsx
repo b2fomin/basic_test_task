@@ -23,8 +23,9 @@ import {
   createBrowserRouter,
   Link,
   RouterProvider,
-  useLocation
+  useLocation,
 } from 'react-router-dom';
+import PerPageSlider from './slider';
 
 const drawerWidth = 240;
 
@@ -98,8 +99,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer({model}) {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const page = Number(query.get('page'));
-  const perPage = Number(query.get('per_page'));
+
+  const [perPage, setPerPage] = React.useState(Number(query.get('per_page')) || '1');
+  const page = Number(query.get('page') || '1');
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -170,6 +172,7 @@ export default function MiniDrawer({model}) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
+        <PerPageSlider perPage={perPage} model={model} setPerPage={setPerPage} min={0} max={100} step={10}/>
         <Table page={page} perPage={perPage} model={model}/>
       </Box>
     </Box>
