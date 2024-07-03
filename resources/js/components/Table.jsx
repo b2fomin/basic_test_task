@@ -57,7 +57,7 @@ export default function DataTable({perPage, page, model}) {
                                     renderItem={(item) => (
                                         <PaginationItem
                                         component={Link}
-                                        to={`/${model}?page=${item.page}&per_page=${perPage}`}
+                                        to={`${(new URL(window.location.href)).origin}/${model}?page=${item.page}&per_page=${perPage}`}
                                         {...item}
                                         />
                                     )}/>

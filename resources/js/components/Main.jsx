@@ -17,6 +17,7 @@ import PerPageSlider from './slider';
 import * as React from 'react';
 import Button from "@mui/material/Button";
 import Stack from '@mui/material/Stack';
+import CreateForm from "./CreateForm";
 
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -58,6 +59,7 @@ if (document.getElementById('example')) {
         <BrowserRouter basename="operations">
         <Routes >
         <Route path="/" element={<MiniDrawer model="operations"/>}></Route>
+        <Route path="/create" element={<CreateForm model="operations"/>}/>
         </Routes>
         </BrowserRouter>
         

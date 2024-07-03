@@ -43,7 +43,7 @@ const openedMixin = (theme) => ({
     },
   });
   
-  const DrawerHeader = styled('div')(({ theme }) => ({
+  export const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -138,7 +138,7 @@ export default function Sidebar({model}) {
                   px: 2.5,
                 }}
                 component={Link}
-                to={`${window.hostname}/${camelToSnakeCase(text)}`}
+                to={`${(new URL(window.location.href)).origin}/${camelToSnakeCase(text)}`}
               >
                 <ListItemIcon
                   sx={{
