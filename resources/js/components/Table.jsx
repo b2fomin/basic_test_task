@@ -15,7 +15,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import { Link } from 'react-router-dom';
 
 const loadData = (perPage, page, model) => {
-    return axios.get(`api/v1/${model}?page=${page}&per_page=${perPage}`)
+    return axios.get(`/api/v1/${model}?page=${page}&per_page=${perPage}`)
     .then(res => {
         return res.status === 200 ? res : Promise.reject(res)})
 };
