@@ -22,6 +22,15 @@ export default function DeleteDialog({model, data}) {
     setOpen(false);
   };
 
+  const onSubmit = async (event, force_delete) => {
+      event.preventDefault();      
+      data.forEach(async (row) => {
+        await axios.delete(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {data: {id: row, force_delete: force_delete}})
+        .then((res) => (res.status === 200 ? 
+          window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
+          : Promise.reject(res)))
+        })
+  };
   return (
     <React.Fragment>
       <Tooltip title="Delete" onClick={handleClickOpen}>
@@ -34,27 +43,19 @@ export default function DeleteDialog({model, data}) {
         onClose={handleClose}
         PaperProps={{
           component: 'form',
-          onSubmit: async (event) => {
-            event.preventDefault();
-            data.forEach(async (row) => {
-              await axios.delete(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {data: {id: row, force_delete: true}})
-              .then((res) => (res.status === 200 ? 
-                window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
-                : Promise.reject(res)))
-              })
-          }
-            
+          onSubmit: {onSubmit}
           }}>
       
         <DialogTitle>Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure to delete selected items?
+            How do you want to delete this row?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button type="submit">Yes</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit" onClick={(event) => onSubmit(event, false)}>Soft Delete</Button>
+          <Button type="submit" onClick={(event) => onSubmit(event, true)}>Force Delete</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
