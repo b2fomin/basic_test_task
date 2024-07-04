@@ -113,7 +113,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, model } = props;
+  const { numSelected, model, data } = props;
 
   return (
     <Toolbar
@@ -147,7 +147,8 @@ function EnhancedTableToolbar(props) {
       )}
 
       {numSelected > 0 ? (
-            <FormDialog/>
+            
+            <FormDialog model="operations" data={data}/>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
@@ -171,7 +172,7 @@ const loadData = (perPage, page, model) => {
 export default function DataTable({perPage, page, model}) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
+    let [selected, setSelected] = React.useState([]);
     
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -224,7 +225,7 @@ export default function DataTable({perPage, page, model}) {
                     return (
                       <Box sx={{ width: '100%' }}>
                         <Paper sx={{ width: '100%', mb: 2 }}>
-                          <EnhancedTableToolbar numSelected={selected.length} model={model} />
+                          <EnhancedTableToolbar numSelected={selected.length} model={model} data={selected} />
                           <TableContainer>
                             <Table
                               sx={{ minWidth: 750 }}

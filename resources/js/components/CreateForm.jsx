@@ -11,7 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 
 
-export default function FormDialog() {
+export default function FormDialog({model, data}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -34,37 +34,27 @@ export default function FormDialog() {
         onClose={handleClose}
         PaperProps={{
           component: 'form',
-          onSubmit: (event) => {
+          onSubmit: async (event) => {
             event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            const email = formJson.email;
-            console.log(email);
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>Subscribe</DialogTitle>
+            data.forEach(async (row) => {
+              await axios.delete(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {data: {id: row, force_delete: true}})
+              .then((res) => (res.status === 200 ? 
+                window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
+                : Promise.reject(res)))
+              })
+          }
+            
+          }}>
+      
+        <DialogTitle>Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
+            Are you sure to delete selected items?
           </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
+          <Button onClick={handleClose}>No</Button>
+          <Button type="submit">Yes</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
