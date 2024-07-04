@@ -15,9 +15,8 @@ import {
 } from 'react-router-dom';
 import PerPageSlider from './slider';
 import * as React from 'react';
-import Button from "@mui/material/Button";
 import Stack from '@mui/material/Stack';
-import CreateForm from "./Dialogs/DeleteDialog";
+import CreateDialog from "./Dialogs/CreateDialog";
 
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -43,7 +42,7 @@ export default function MiniDrawer({model}) {
         <DrawerHeader />
         <PerPageSlider perPage={perPage} model={model} setPerPage={setPerPage} min={0} max={100} step={10}/>
         <Stack direction="row" display="flex" justifyContent="flex-end">
-          <Link to={`/create`}><Button variant="contained">New+</Button></Link>
+          <CreateDialog/>
         </Stack>
         <Table page={page} perPage={perPage} model={model}/>
       </Box>
@@ -59,14 +58,12 @@ if (document.getElementById('example')) {
         <BrowserRouter basename="operations">
         <Routes >
         <Route path="/" element={<MiniDrawer model="operations"/>}></Route>
-        <Route path="/create" element={<CreateForm model="operations"/>}/>
         </Routes>
         </BrowserRouter>
         
         <BrowserRouter basename="sub_operations">
         <Routes >
         <Route path="/" element={<MiniDrawer model="sub_operations"/>}></Route>
-        <Route path="/create" element={<CreateForm model="sub_operations"/>}/>
         </Routes>
         </BrowserRouter>
       </React.StrictMode>

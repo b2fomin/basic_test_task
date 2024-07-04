@@ -21,7 +21,7 @@ import { Async } from 'react-async';
 import { Pagination, PaginationItem, Stack } from '@mui/material';
 import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
-import FormDialog from './Dialogs/DeleteDialog'
+import DeleteDialog from './Dialogs/DeleteDialog';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -148,7 +148,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
             
-            <FormDialog model="operations" data={data}/>
+            <DeleteDialog model="operations" data={data}/>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
@@ -275,6 +275,7 @@ export default function DataTable({perPage, page, model}) {
                               <TableFooter>
                                 <TableCell></TableCell>
                               <Pagination
+                                page={page}
                                 count={pages_num}
                                 renderItem={(item) => (
                                 <PaginationItem
