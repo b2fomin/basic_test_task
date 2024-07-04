@@ -2,7 +2,7 @@ import * as React from 'react';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-export default function PerPageSlider({perPage, setPerPage, model, max, min, step}) {
+export default function PerPageSlider({perPage, setPerPage, max, min, step}) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', 1);
     url.searchParams.set('per_page', perPage);

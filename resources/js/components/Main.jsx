@@ -40,9 +40,9 @@ export default function MiniDrawer({model}) {
       <Sidebar model={model}/>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <PerPageSlider perPage={perPage} model={model} setPerPage={setPerPage} min={0} max={100} step={10}/>
+        <PerPageSlider perPage={perPage} setPerPage={setPerPage} min={0} max={100} step={10}/>
         <Stack direction="row" display="flex" justifyContent="flex-end">
-          <CreateDialog/>
+          <CreateDialog model={model}/>
         </Stack>
         <Table page={page} perPage={perPage} model={model}/>
       </Box>

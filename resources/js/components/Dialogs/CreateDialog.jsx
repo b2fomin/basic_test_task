@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 
 
-export default function CreateDialog({model, data}) {
+export default function CreateDialog({model}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -39,7 +39,9 @@ export default function CreateDialog({model, data}) {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
-            await axios.post(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {data: {name: formJson.to_create}})
+            await axios.post(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {
+                name: formJson.create_name, 
+                operation_id: formJson.create_operation_id})
             .then((res) => (res.status === 200 ? 
             window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
             : Promise.reject(res)))
@@ -54,12 +56,22 @@ export default function CreateDialog({model, data}) {
             autoFocus
             required
             margin="dense"
-            name="to_create"
+            name="create_name"
             label="Name"
             type="text"
             fullWidth
             variant="standard"
           />
+          {'model' === 'sub_operations' ? <TextField
+            autoFocus
+            required
+            margin="dense"
+            name="create_operation_id"
+            label="Operation ID"
+            type="text"
+            fullWidth
+            variant="standard"
+          /> : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
