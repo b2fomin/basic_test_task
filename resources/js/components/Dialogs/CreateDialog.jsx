@@ -62,7 +62,7 @@ export default function CreateDialog({model}) {
             fullWidth
             variant="standard"
           />
-          {'model' === 'sub_operations' ? <TextField
+          {model === 'sub_operations' ? <TextField
             autoFocus
             required
             margin="dense"
