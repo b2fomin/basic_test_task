@@ -21,7 +21,7 @@ import { Async } from 'react-async';
 import { Pagination, PaginationItem, Stack } from '@mui/material';
 import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
-import FormDialog from './CreateForm'
+import FormDialog from './Dialogs/DeleteDialog'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
