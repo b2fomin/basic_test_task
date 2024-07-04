@@ -23,8 +23,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'id' => 'uuid|required',
-            'operation_id' => 'uuid',
-            'name' => 'string',
+            'operation_id' => 'uuid|nullable',
+            'name' => 'string|nullable',
         ];
     }
 }

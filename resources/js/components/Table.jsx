@@ -22,6 +22,8 @@ import { Pagination, PaginationItem, Stack } from '@mui/material';
 import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
 import DeleteDialog from './Dialogs/DeleteDialog';
+import UpdateDialog from './Dialogs/UpdateDialog';
+import $ from 'jquery';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -184,9 +186,11 @@ export default function DataTable({perPage, page, model}) {
         if (event.target.checked) {
         const newSelected = data.map((n) => n.id);
         setSelected(newSelected);
+        event.stopPropagation();
         return;
         }
         setSelected([]);
+        event.stopPropagation();
     };
     
     const handleClick = (event, id) => {
@@ -206,6 +210,7 @@ export default function DataTable({perPage, page, model}) {
         );
         }
         setSelected(newSelected);
+        event.stopPropagation();
     };
         
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -249,6 +254,7 @@ export default function DataTable({perPage, page, model}) {
                                   return (
                                     <TableRow
                                       hover
+                                      id={toString(row.id)}
                                       onClick={(event) => handleClick(event, row.id)}
                                       role="checkbox"
                                       aria-checked={isItemSelected}
@@ -266,7 +272,8 @@ export default function DataTable({perPage, page, model}) {
                                           }}
                                         />
                                       </TableCell>
-                                      {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))}                                      
+                                      {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
+                                      <TableCell><UpdateDialog data={[row]} model={model}/></TableCell>
                                     </TableRow>
                                   );
                                 })}

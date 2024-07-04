@@ -15,7 +15,9 @@ class UpdateController extends BaseController
 
         $subOperations = SubOperation::find($data['id']);
         unset($data['id']);
-        
+        if (is_null($data['operation_id'])) unset($data['operation_id']);
+        if (is_null($data['name'])) unset($data['name']);
+
         try {
             $this->service->update($subOperations, $data);
             return new SuccessResource([]);

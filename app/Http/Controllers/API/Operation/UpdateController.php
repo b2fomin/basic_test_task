@@ -15,6 +15,7 @@ class UpdateController extends BaseController
 
         $operations = Operation::find($data['id']);
         unset($data['id']);
+        if (is_null($data['name'])) unset($data['name']);
         
         try {
             $this->service->update($operations, $data);
