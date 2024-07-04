@@ -4,12 +4,14 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 export default function PerPageSlider({perPage, setPerPage, model, max, min, step}) {
     const url = new URL(window.location.href);
+    url.searchParams.set('page', 1);
     url.searchParams.set('per_page', perPage);
     window.history.pushState(null, '', url.toString());
 
     const handleChange = (event, newPerPage) => {
         document.body.onmouseup = document.body.onkeyup = () => {
             setPerPage(newPerPage);
+            url.searchParams.set('page', 1);
             url.searchParams.set('per_page', newPerPage);
             window.history.pushState(null, '', url.toString());
 

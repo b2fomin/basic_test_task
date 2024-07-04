@@ -66,6 +66,7 @@ if (document.getElementById('example')) {
         <BrowserRouter basename="sub_operations">
         <Routes >
         <Route path="/" element={<MiniDrawer model="sub_operations"/>}></Route>
+        <Route path="/create" element={<CreateForm model="sub_operations"/>}/>
         </Routes>
         </BrowserRouter>
       </React.StrictMode>
