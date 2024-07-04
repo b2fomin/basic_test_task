@@ -23,7 +23,6 @@ import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
 import DeleteDialog from './Dialogs/DeleteDialog';
 import UpdateDialog from './Dialogs/UpdateDialog';
-import $ from 'jquery';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -58,7 +57,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, onRequestSort, rowCount, data } =
+  const { onSelectAllClick, numSelected, onRequestSort, rowCount, data } =
     props;
     const col_names = Object.keys(data[0]);
   const createSortHandler = (property) => (event) => {
@@ -180,6 +179,7 @@ export default function DataTable({perPage, page, model}) {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+        stableSort(data)
     };
     
     const handleSelectAllClick = (event, data) => {
