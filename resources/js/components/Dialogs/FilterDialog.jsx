@@ -11,7 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import $ from 'jquery';
 
 export default function FilterDialog({model, setExtQuery, extQuery}) {
   const [open, setOpen] = React.useState(false);
@@ -66,7 +65,7 @@ export default function FilterDialog({model, setExtQuery, extQuery}) {
             type="number"
             fullWidth
             variant="standard"
-            onChange={(event) => {setQuery({...extQuery, number: event.target.value})}}
+            onChange={(event) => {setQuery({...extQuery, number: Number(event.target.value)})}}
             defaultValue={query.number}
 
           />
@@ -81,35 +80,35 @@ export default function FilterDialog({model, setExtQuery, extQuery}) {
           <DatePicker 
             id="filter_created_at_before"
             variant="standard"
-            onChange={(event) => {setQuery({...extQuery, created_at_before: event.$d})}}
+            onChange={(event) => {setQuery({...extQuery, created_at_before: Date(event.$d)})}}
             defaultValue={query.created_at_before}
           /><br/>
           <DatePicker
           label="Created at after"
           id="filter_created_at_after"
           variant="standard"
-          onChange={(event) => {setQuery({...extQuery, created_at_after: event.$d})}}
+          onChange={(event) => {setQuery({...extQuery, created_at_after: Date(event.$d)})}}
           defaultValue={query.created_at_after}
           /><br/>
         <DatePicker
             label="Updated at before"
             id="filter_updated_at_before"
             variant="standard"
-            onChange={(event) => {setQuery({...extQuery, updated_at_before: event.$d})}}
+            onChange={(event) => {setQuery({...extQuery, updated_at_before: Date(event.$d)})}}
             defaultValue={query.updated_at_before}
           /><br/>
           <DatePicker
             label="Updated at after"
             id="filter_updated_at_after"
             variant="standard"
-            onChange={(event) => {setQuery({...extQuery, updated_at_after: event.$d})}}
+            onChange={(event) => {setQuery({...extQuery, updated_at_after: Date(event.$d)})}}
             defaultValue={query.updated_at_after}
           /><br/>
           </LocalizationProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={async (event) => {
+          <Button onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
             setExtQuery(query);

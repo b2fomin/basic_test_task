@@ -12,18 +12,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
 import { Async } from 'react-async';
-import { Pagination, PaginationItem, Stack } from '@mui/material';
+import { Pagination, PaginationItem } from '@mui/material';
 import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
 import DeleteDialog from './Dialogs/DeleteDialog';
 import UpdateDialog from './Dialogs/UpdateDialog';
 import FilterDialog from './Dialogs/FilterDialog';
-
+import CreateDialog from './Dialogs/CreateDialog';
 
 function EnhancedTableHead(props) {
   const { onSelectAllClick, numSelected, rowCount, data } =
@@ -95,7 +91,7 @@ function EnhancedTableToolbar(props) {
           {model}
         </Typography>
       )}
-
+      <CreateDialog model={model}/>
       {numSelected > 0 ? (
             
             <DeleteDialog model="operations" data={data}/>
@@ -113,7 +109,7 @@ const loadData = (perPage, page, model, query_string) => {
     let query = JSON.parse(query_string);
     query.page = page;
     query.per_page = perPage;
-    query = Object.fromEntries(Object.entries(query).filter(([_, v]) => v != "" && v!=null && v!=undefined));
+    query = Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== "" && v!==null && v!==undefined));
     console.log(query);
     return axios.get(`/api/v1/${model}`, {params: query})
     .then(res => {        
@@ -124,9 +120,9 @@ export default function DataTable({perPage, page, model}) {
     let [selected, setSelected] = React.useState([]);
     const [query, setQuery] = React.useState({});
     let query_string = JSON.stringify(query);
-    React.useEffect(() => query_string = JSON.stringify(query), [query]);
-    const loadDataMemo = React.useMemo(() => 
-      loadData(perPage, page, model, query_string), [perPage, page, model, query_string]);
+    let query_string_memo = React.useMemo(() => JSON.stringify(query), [query]);
+    let loadDataMemo = React.useMemo(() => 
+      loadData(perPage, page, model, query_string_memo), [perPage, page, model, query_string_memo]);
     
     const handleSelectAllClick = (event, data) => {
         if (event.target.checked) {
@@ -156,6 +152,7 @@ export default function DataTable({perPage, page, model}) {
         );
         }
         setSelected(newSelected);
+        event.stopPropagation();
     };
         
     const isSelected = (id) => selected.indexOf(id) !== -1;

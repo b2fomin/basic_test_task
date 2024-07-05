@@ -6,17 +6,12 @@ import Box from '@mui/material/Box';
 import ReactDOM from 'react-dom/client';
 import {
   BrowserRouter,
-  Link,
   Routes,
   Route,
   useLocation,
-  createBrowserRouter,
-  RouterProvider,
 } from 'react-router-dom';
 import PerPageSlider from './slider';
 import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import CreateDialog from "./Dialogs/CreateDialog";
 
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -41,9 +36,6 @@ export default function MiniDrawer({model}) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <PerPageSlider perPage={perPage} setPerPage={setPerPage} min={0} max={100} step={10}/>
-        <Stack direction="row" display="flex" justifyContent="flex-end">
-          <CreateDialog model={model}/>
-        </Stack>
         <Table page={page} perPage={perPage} model={model}/>
       </Box>
     </Box>
