@@ -8,7 +8,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -23,46 +22,13 @@ import TableFooter from '@mui/material/TableFooter';
 import { Link } from 'react-router-dom';
 import DeleteDialog from './Dialogs/DeleteDialog';
 import UpdateDialog from './Dialogs/UpdateDialog';
+import FilterDialog from './Dialogs/FilterDialog';
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, numSelected, onRequestSort, rowCount, data } =
+  const { onSelectAllClick, numSelected, rowCount, data } =
     props;
-    const col_names = Object.keys(data[0]);
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
+    const col_names = Object.keys(data.length ? data[0] : {});
 
   return (
     <TableHead>
@@ -78,25 +44,11 @@ function EnhancedTableHead(props) {
           />
         </TableCell>
         {col_names.map((col_name) => {
-        let row = data[0];
         return <TableCell
-        key={row.id}
         align="center"
         padding="none"
-        sortDirection={orderBy === row.id ? order : false}
-        >
-        <TableSortLabel
-            active={orderBy === row.id}
-            direction={orderBy === row.id ? order : 'asc'}
-            onClick={createSortHandler(row.id)}
         >
             {col_name}
-            {orderBy === row.id ? (
-            <Box component="span">
-                {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-            </Box>
-            ) : null}
-        </TableSortLabel>
         </TableCell>
         })}
       </TableRow>
@@ -106,15 +58,12 @@ function EnhancedTableHead(props) {
 
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, model, data } = props;
+  const { numSelected, model, data, query, setQuery } = props;
 
   return (
     <Toolbar
@@ -151,11 +100,7 @@ function EnhancedTableToolbar(props) {
             
             <DeleteDialog model="operations" data={data}/>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+          <FilterDialog model={model} extQuery={query} setExtQuery={setQuery}/>
       )}
     </Toolbar>
   );
@@ -164,23 +109,19 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-const loadData = (perPage, page, model) => {
-    return axios.get(`/api/v1/${model}?page=${page}&per_page=${perPage}`)
+const loadData = (perPage, page, model, query) => {
+    query.page = page;
+    query.per_page = perPage;
+    query = Object.fromEntries(Object.entries(query).filter(([_, v]) => v != "" && v!=null && v!=undefined));
+    console.log(query);
+    return axios.get(`/api/v1/${model}`, {params: query})
     .then(res => {        
         return res.status === 200 ? res : Promise.reject(res)})
 };
 
 export default function DataTable({perPage, page, model}) {
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
     let [selected, setSelected] = React.useState([]);
-    
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-        stableSort(data)
-    };
+    const [query, setQuery] = React.useState({});
     
     const handleSelectAllClick = (event, data) => {
         if (event.target.checked) {
@@ -217,20 +158,20 @@ export default function DataTable({perPage, page, model}) {
     
     // Avoid a layout jump when reaching the last page with empty rows.
     
-  return <Async promiseFn={() => loadData(perPage, page, model)}>
+  return <Async promiseFn={() => loadData(perPage, page, model, new Object(query))}>
         {
             ({data, error, isLoading}) => {
                 if (isLoading) return 'Loading...';
                 if (error) return `Something went wrong: ${error.message}`;
                 if (data) {
                     data = data.data.data;
-                    const pages_num = data[0].pages_num;
+                    const pages_num = data.length ? data[0].pages_num : 0;
                     data.map((elem) => delete elem.pages_num);
                   
                     return (
                       <Box sx={{ width: '100%' }}>
                         <Paper sx={{ width: '100%', mb: 2 }}>
-                          <EnhancedTableToolbar numSelected={selected.length} model={model} data={selected} />
+                          <EnhancedTableToolbar numSelected={selected.length} model={model} data={selected} query={query} setQuery={setQuery} />
                           <TableContainer>
                             <Table
                               sx={{ minWidth: 750 }}
@@ -239,10 +180,7 @@ export default function DataTable({perPage, page, model}) {
                             >
                               <EnhancedTableHead
                                 numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
                                 onSelectAllClick={(event) => handleSelectAllClick(event, data)}
-                                onRequestSort={handleRequestSort}
                                 rowCount={perPage}
                                 data={data}
                               />
