@@ -109,19 +109,24 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-const loadData = (perPage, page, model, query) => {
+const loadData = (perPage, page, model, query_string) => {
+    let query = JSON.parse(query_string);
     query.page = page;
     query.per_page = perPage;
     query = Object.fromEntries(Object.entries(query).filter(([_, v]) => v != "" && v!=null && v!=undefined));
     console.log(query);
     return axios.get(`/api/v1/${model}`, {params: query})
     .then(res => {        
-        return res.status === 200 ? res : Promise.reject(res)})
+        return res.status === 200 ? res.data.data : Promise.reject(res)})
 };
 
 export default function DataTable({perPage, page, model}) {
     let [selected, setSelected] = React.useState([]);
     const [query, setQuery] = React.useState({});
+    let query_string = JSON.stringify(query);
+    React.useEffect(() => query_string = JSON.stringify(query), [query]);
+    const loadDataMemo = React.useMemo(() => 
+      loadData(perPage, page, model, query_string), [perPage, page, model, query_string]);
     
     const handleSelectAllClick = (event, data) => {
         if (event.target.checked) {
@@ -151,20 +156,16 @@ export default function DataTable({perPage, page, model}) {
         );
         }
         setSelected(newSelected);
-        event.stopPropagation();
     };
         
     const isSelected = (id) => selected.indexOf(id) !== -1;
     
-    // Avoid a layout jump when reaching the last page with empty rows.
-    
-  return <Async promiseFn={() => loadData(perPage, page, model, new Object(query))}>
+  return <Async promiseFn={() => loadDataMemo}>
         {
             ({data, error, isLoading}) => {
                 if (isLoading) return 'Loading...';
                 if (error) return `Something went wrong: ${error.message}`;
                 if (data) {
-                    data = data.data.data;
                     const pages_num = data.length ? data[0].pages_num : 0;
                     data.map((elem) => delete elem.pages_num);
                   
@@ -178,6 +179,7 @@ export default function DataTable({perPage, page, model}) {
                               aria-labelledby="tableTitle"
                               size="medium"
                             >
+                              {}
                               <EnhancedTableHead
                                 numSelected={selected.length}
                                 onSelectAllClick={(event) => handleSelectAllClick(event, data)}
