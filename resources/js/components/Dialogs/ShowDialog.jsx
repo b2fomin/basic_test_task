@@ -10,11 +10,12 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import { loadData } from '../Table';
-import { Async } from 'react-async';
 
 export default function ShowDialog({model, op_or_subop}) {
     const [open, setOpen] = React.useState(false);
-    const func = async () => {
+    const [sub_operations_names, setSubOperationsNames] = React.useState([]);
+    const [operation_name, setOperationName] = React.useState("");
+    const func = React.useCallback(async () => {
         let operation_name, sub_operations_names;
         if(model === 'operations') {
             operation_name = await op_or_subop.name;
@@ -27,10 +28,12 @@ export default function ShowDialog({model, op_or_subop}) {
             let sub_operations = await loadData(10, 1, 'sub_operations', JSON.stringify({operation_id: operation.id}));
             sub_operations_names = await sub_operations.map((sub_operation) => (sub_operation.name));
         }
-        return [operation_name, sub_operations_names];
-    };
+        setOperationName(operation_name);
+        setSubOperationsNames(sub_operations_names);
+    }, [op_or_subop]);
     const handleClickOpen = (event) => {
       setOpen(true);
+      func();
       event.preventDefault();
       event.stopPropagation();      
     };
@@ -50,40 +53,26 @@ export default function ShowDialog({model, op_or_subop}) {
               <VisibilityIcon/>
             </IconButton>
           </Tooltip>
-          <Async promiseFn={func}>
-          {
-            ({data, error, isLoading}) => {
-                if (isLoading) return 'Loading...';
-                if (error) return `Something went wrong: ${error.message}`;
-                if (data) {
-                    const [operation_name, sub_operations_names] = data;
-                    return (
-                        <Dialog
-                        autoFocus
-                        open={open}
-                        onClose={handleClose}
-                        PaperProps={{
-                        component: 'form',
-                        }}>
-                            <Card sx={{ minWidth: 275 }}>
-                            <CardContent>
-                                <Typography>
-                                    Operation: {operation_name}<br/>
-                                    SubOperations:
-                                </Typography>
-                                <ul>
-                                {sub_operations_names.map((name) => <><li>{name}</li></>)}
-                                </ul>
-                            </CardContent>
-                            </Card>
-                        </Dialog>
-                    );
-                }
-            }
-          }
-            
-            </Async>
-      </React.Fragment>
+          <Dialog
+          autoFocus
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+          component: 'form',
+          }}>
+              <Card sx={{ minWidth: 275 }}>
+              <CardContent>
+                  <Typography>
+                      Operation: {operation_name}<br/>
+                      SubOperations:
+                  </Typography>
+                  <ul>
+                  {sub_operations_names.map((name) => <><li>{name}</li></>)}
+                  </ul>
+              </CardContent>
+              </Card>
+          </Dialog>
+       </React.Fragment>
     );
 }
   

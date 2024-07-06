@@ -118,7 +118,6 @@ export const loadData = (perPage, page, model, query_string) => {
 export default function DataTable({perPage, page, model}) {
     let [selected, setSelected] = React.useState([]);
     const [query, setQuery] = React.useState({});
-    let query_string = JSON.stringify(query);
     let query_string_memo = React.useMemo(() => JSON.stringify(query), [query]);
     let loadDataMemo = React.useMemo(() => 
       loadData(perPage, page, model, query_string_memo), [perPage, page, model, query_string_memo]);
