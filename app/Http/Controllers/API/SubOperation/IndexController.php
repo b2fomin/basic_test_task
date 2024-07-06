@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 class IndexController extends BaseController
 {
     public function __invoke(IndexRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
         $page = $per_page = 1;
         if (isset($data['page'])) {
@@ -23,10 +24,7 @@ class IndexController extends BaseController
             $per_page = $data['per_page'];
             unset($data['per_page']);
         }
-
-        $filter = app()->make(SubOperationFilter::class, ['queryParams' => array_filter($data)]);
-
-        $subOperations = SubOperation::filter($filter)->paginate($per_page, ['*'], 'page', $page);
+        $subOperations = $this->service->filter(array_filter($data))->paginate($per_page, ['*'], 'page', $page);
 
         return IndexResource::collection($subOperations);
     }

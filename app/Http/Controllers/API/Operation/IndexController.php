@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API\Operation;
 
-use App\Http\Filters\OperationFilter;
 use App\Http\Requests\API\Operation\IndexRequest;
 use App\Http\Resources\API\Operation\IndexResource;
-use App\Models\API\Operation;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class IndexController extends BaseController
 {
     public function __invoke(IndexRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
         $page = $per_page = 1;
         if (isset($data['page'])) {
@@ -22,9 +22,8 @@ class IndexController extends BaseController
             unset($data['per_page']);
         }
 
-        $filter = app()->make(OperationFilter::class, ['queryParams' => array_filter($data)]);
-
-        $operations = Operation::filter($filter)->paginate($per_page, ['*'], 'page', $page);
+        /** @var LengthAwarePaginator $operations */
+        $operations = $this->service->filter(array_filter($data))->paginate($per_page, ['*'], 'page', $page);
 
         return IndexResource::collection($operations);
     }

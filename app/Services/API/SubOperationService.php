@@ -4,18 +4,22 @@ namespace App\Services\API;
 
 use App\Models\API\SubOperation;
 use App\Models\API\Operation;
+use App\Http\Filters\SubOperationFilter;
+
 
 class SubOperationService {
-    public function store($data) {
+    public function store(array $data) {
         $data['number'] = SubOperation::where('operation_id', '=', $data['operation_id'])->max('number') + 1;
         SubOperation::createOrFirst($data);
     }
 
-    public function update($sub_operation, $data) {
+    public function update(string $id, array $data) {
+        $sub_operation = SubOperation::findOrFail($id);
         $sub_operation->update($data);
     }
 
-    public function delete($sub_operation, $force_delete) {
+    public function delete(string $id, bool $force_delete) {
+        $sub_operation = SubOperation::findOrFail($id);
         $number = $sub_operation->number;
         $operation = $sub_operation->operation();
         if ($force_delete)
@@ -39,7 +43,7 @@ class SubOperationService {
         }
     }
 
-    public function clear($force_delete) {
+    public function clear(bool $force_delete) {
         if ($force_delete) {
             SubOperation::withTrashed()->operation()->forceDelete();
             SubOperation::withTrashed()->forceDelete();
@@ -48,5 +52,9 @@ class SubOperationService {
             SubOperation::all()->operations()->delete();
             SubOperation::delete();
         }
+    }
+    public function filter(array $query_params) {
+        $filter = app()->make(SubOperationFilter::class, ['queryParams' => $query_params]);
+        return SubOperation::filter($filter);
     }
 }

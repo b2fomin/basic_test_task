@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class StoreController extends BaseController
 {
     public function __invoke(StoreRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
         try {
         $this->service->store($data);

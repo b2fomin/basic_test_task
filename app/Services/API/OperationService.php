@@ -2,10 +2,11 @@
 
 namespace App\Services\API;
 
+use App\Http\Filters\OperationFilter;
 use App\Models\API\Operation;
 
 class OperationService {
-    public function store($data) {
+    public function store(array $data) {
         $operation = Operation::createOrFirst($data);
         $sub_operation = $operation->subOperations()->create([
             'operation_id' => $operation->id,
@@ -14,11 +15,13 @@ class OperationService {
         $sub_operation->delete();
     }
 
-    public function update($operation, $data) {
+    public function update(string $id, array $data) {
+        $operation = Operation::findOrFail($id);
         $operation->update($data);
     }
 
-    public function delete($operation, $force_delete) {
+    public function delete(string $id, bool $force_delete) {
+        $operation = Operation::findOrFail($id);
         if ($force_delete) {
             $operation->subOperations()->forceDelete();
             $operation->forceDelete();
@@ -29,7 +32,7 @@ class OperationService {
         }
     }
 
-    public function clear($force_delete) {
+    public function clear(bool $force_delete) {
         if ($force_delete) {
             Operation::withTrashed()->subOperations()->forceDelete();
             Operation::withTrashed()->forceDelete();
@@ -39,5 +42,11 @@ class OperationService {
             Operation::all()->subOperations()->delete();
             Operation::delete();
         }
+    }
+
+    public function filter(array $query_params) {
+        /** @var array $data */
+        $filter = app()->make(OperationFilter::class, ['queryParams' => $query_params]);
+        return Operation::filter($filter);
     }
 }

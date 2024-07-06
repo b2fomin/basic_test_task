@@ -9,10 +9,10 @@ use App\Models\API\SubOperation;
 class DestroyController extends BaseController
 {
     public function __invoke(DestroyRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
         try{
-            $sub_operation = SubOperation::findOrFail($data["id"]);
-            $this->service->delete($sub_operation, $data['force_delete']);
+            $this->service->delete($data["id"], $data['force_delete']);
             return new SuccessResource([]);
         } catch (\Exception $e) {
             return new SuccessResource(['err_msg'=> $e->getMessage()]);

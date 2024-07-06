@@ -11,14 +11,16 @@ use Illuminate\Http\Request;
 class UpdateController extends BaseController
 {
     public function __invoke(UpdateRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
 
-        $operations = Operation::find($data['id']);
+        /** @var string $id */
+        $id =$data['id'];
         unset($data['id']);
         if (is_null($data['name'])) unset($data['name']);
         
         try {
-            $this->service->update($operations, $data);
+            $this->service->update($id, $data);
             return new SuccessResource([]);
         } catch (\Exception $e) {
             return new SuccessResource(['err_msg'=> $e->getMessage()]);

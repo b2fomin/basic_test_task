@@ -11,10 +11,10 @@ use Illuminate\Http\Request;
 class DestroyController extends BaseController
 {
     public function __invoke(DestroyRequest $request) {
+        /** @var array $data */
         $data = $request->validated();
         try{
-            $operation = Operation::findOrFail($data["id"]);
-            $this->service->delete($operation, $data['force_delete']);
+            $this->service->delete($data["id"], $data['force_delete']);
             return new SuccessResource([]);
         } catch (\Exception $e) {
             return new SuccessResource(['err_msg'=> $e->getMessage()]);
