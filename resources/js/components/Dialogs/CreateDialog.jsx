@@ -6,7 +6,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
@@ -50,7 +49,7 @@ export default function CreateDialog({model}) {
         <DialogTitle>Create</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure to create item?
+            Are you sure to create an item?
           </DialogContentText>
           <TextField
             autoFocus

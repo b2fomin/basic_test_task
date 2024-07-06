@@ -78,7 +78,8 @@ export default function FilterDialog({model, setExtQuery, extQuery}) {
           /> : null}<br/>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker 
-            id="filter_created_at_before"
+          label="Created at before"
+          id="filter_created_at_before"
             variant="standard"
             onChange={(event) => {setQuery({...extQuery, created_at_before: Date(event.$d)})}}
             defaultValue={query.created_at_before}

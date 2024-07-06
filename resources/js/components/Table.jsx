@@ -209,7 +209,7 @@ export default function DataTable({perPage, page, model}) {
                                         />
                                       </TableCell>
                                       {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
-                                      <TableCell><UpdateDialog data={[row]} model={model}/></TableCell>
+                                      <TableCell><UpdateDialog data={row} model={model}/></TableCell>
                                       <TableCell><ShowDialog model={model} op_or_subop={row}/></TableCell>
                                     </TableRow>
                                   );

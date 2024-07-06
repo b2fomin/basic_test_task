@@ -70,30 +70,21 @@ export default function UpdateDialog({model, data}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={async (event) => {
+          <Button onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            const name = document.getElementById('update_name').value;
-            let operation_id, elem;
-            if ((elem = document.getElementById('update_operation_id')) != null){
-                operation_id = elem.value;
-            }
             
-            data.forEach(async (row) => {
+              const func = async () => {
                 let res = {};
                 res.id = row.id;
-                if (typeof(operation_id) !== undefined) {
-                    res.operation_id = operation_id;
-                }
-                if (name !== undefined) {
-                    res.name = name;
-                }
+                res.operation_id = document.getElementById('update_operation_id').value;                
+                res.name = document.getElementById('update_name').value;;
+                
                 await axios.patch(`${(new URL(window.location.href)).origin}/api/v1/${model}`, res)
                 .then((res) => (res.status === 200 ? 
                   window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
                   : Promise.reject(res)))
-                })
-                }}>Yes</Button>
+                }}}>Yes</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
