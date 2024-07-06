@@ -20,7 +20,7 @@ import DeleteDialog from './Dialogs/DeleteDialog';
 import UpdateDialog from './Dialogs/UpdateDialog';
 import FilterDialog from './Dialogs/FilterDialog';
 import CreateDialog from './Dialogs/CreateDialog';
-
+import ShowDialog from './Dialogs/ShowDialog';
 function EnhancedTableHead(props) {
   const { onSelectAllClick, numSelected, rowCount, data } =
     props;
@@ -105,14 +105,13 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-const loadData = (perPage, page, model, query_string) => {
+export const loadData = (perPage, page, model, query_string) => {
     let query = JSON.parse(query_string);
     query.page = page;
     query.per_page = perPage;
     query = Object.fromEntries(Object.entries(query).filter(([_, v]) => v !== "" && v!==null && v!==undefined));
-    console.log(query);
     return axios.get(`/api/v1/${model}`, {params: query})
-    .then(res => {        
+    .then(res => { 
         return res.status === 200 ? res.data.data : Promise.reject(res)})
 };
 
@@ -211,6 +210,7 @@ export default function DataTable({perPage, page, model}) {
                                       </TableCell>
                                       {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
                                       <TableCell><UpdateDialog data={[row]} model={model}/></TableCell>
+                                      <TableCell><ShowDialog model={model} op_or_subop={row}/></TableCell>
                                     </TableRow>
                                   );
                                 })}
