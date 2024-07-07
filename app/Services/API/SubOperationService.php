@@ -15,6 +15,11 @@ class SubOperationService {
 
     public function update(string $id, array $data) {
         $sub_operation = SubOperation::findOrFail($id);
+        if (isset($data['operation_id'])) {
+            $number = $sub_operation->number;
+            SubOperation::where('operation_id', $sub_operation->operation_id)->where('number', '>', $number)->decrement('number');
+            $data['number'] = SubOperation::where('operation_id', $data['operation_id'])->max('number') + 1;
+        }
         $sub_operation->update($data);
     }
 
@@ -36,10 +41,7 @@ class SubOperationService {
                 $operation->delete();
             }
 
-            foreach($all_sub_operations as $row) {
-                if ($row->number > $number)
-                    --$row->number;
-            }
+            $all_sub_operations->where('number', '>', $number)->decrement('number');
         }
     }
 
