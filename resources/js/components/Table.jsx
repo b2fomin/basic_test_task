@@ -94,7 +94,7 @@ function EnhancedTableToolbar(props) {
       <CreateDialog model={model}/>
       {numSelected > 0 ? (
             
-            <DeleteDialog model="operations" data={data}/>
+            <DeleteDialog model={model} data={data}/>
       ) : (
           <FilterDialog model={model} extQuery={query} setExtQuery={setQuery}/>
       )}
@@ -197,7 +197,7 @@ function DataTable({perPage, page, model, data, query, setQuery}) {
                           />
                         </TableCell>
                         {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
-                        <TableCell><UpdateDialog data={row} model={model}/></TableCell>
+                        <TableCell><UpdateDialog row={row} model={model}/></TableCell>
                         <TableCell><ShowDialog model={model} op_or_subop={row}/></TableCell>
                       </TableRow>
                     );

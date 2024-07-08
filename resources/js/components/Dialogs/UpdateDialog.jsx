@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Outlet } from 'react-router-dom';
 
 
-export default function UpdateDialog({model, data}) {
+export default function UpdateDialog({model, row}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = (event) => {
@@ -43,7 +43,7 @@ export default function UpdateDialog({model, data}) {
         PaperProps={{
           component: 'form',
           }}>
-        <DialogTitle>Create</DialogTitle>
+        <DialogTitle>Update</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure to update the item?
@@ -57,6 +57,7 @@ export default function UpdateDialog({model, data}) {
             type="text"
             fullWidth
             variant="standard"
+            defaultValue={row.name}
           />
           {model === 'sub_operations' ? <TextField
             margin="dense"
@@ -66,25 +67,25 @@ export default function UpdateDialog({model, data}) {
             type="text"
             fullWidth
             variant="standard"
+            defaultValue={row.operation_id}
           /> : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>No</Button>
-          <Button onClick={(event) => {
+          <Button onClick={async (event) => {
             event.preventDefault();
             event.stopPropagation();
+            console.log(document.getElementById(toString(row.id)));
+            let res = {};
+            res.id = row.id;
+            res.operation_id = document.getElementById('update_operation_id').value;                
+            res.name = document.getElementById('update_name').value;
             
-              const func = async () => {
-                let res = {};
-                res.id = row.id;
-                res.operation_id = document.getElementById('update_operation_id').value;                
-                res.name = document.getElementById('update_name').value;;
-                
-                await axios.patch(`${(new URL(window.location.href)).origin}/api/v1/${model}`, res)
-                .then((res) => (res.status === 200 ? 
-                  window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
-                  : Promise.reject(res)))
-                }}}>Yes</Button>
+            await axios.patch(`${(new URL(window.location.href)).origin}/api/v1/${model}`, res)
+            .then((res) => (res.status === 200 ? 
+              setExtQuery(query)
+              : Promise.reject(res)))
+            }}>Yes</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
