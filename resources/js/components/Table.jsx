@@ -115,12 +115,8 @@ export const loadData = (perPage, page, model, query_string) => {
         return res.status === 200 ? res.data.data : Promise.reject(res)})
 };
 
-export default function DataTable({perPage, page, model}) {
-    let [selected, setSelected] = React.useState([]);
-    const [query, setQuery] = React.useState({});
-    let query_string_memo = React.useMemo(() => JSON.stringify(query), [query]);
-    let loadDataMemo = React.useMemo(() => 
-      loadData(perPage, page, model, query_string_memo), [perPage, page, model, query_string_memo]);
+function DataTable({perPage, page, model, data, query, setQuery}) {
+    let [selected, setSelected] = React.useState([]);   
     
     const handleSelectAllClick = (event, data) => {
         if (event.target.checked) {
@@ -154,87 +150,91 @@ export default function DataTable({perPage, page, model}) {
     };
         
     const isSelected = (id) => selected.indexOf(id) !== -1;
+    const pages_num = data.length ? data[0].pages_num : 0;
+    data.map((elem) => delete elem.pages_num);
     
-  return <Async promiseFn={() => loadDataMemo}>
-        {
-            ({data, error, isLoading}) => {
-                if (isLoading) return 'Loading...';
-                if (error) return `Something went wrong: ${error.message}`;
-                if (data) {
-                    const pages_num = data.length ? data[0].pages_num : 0;
-                    data.map((elem) => delete elem.pages_num);
-                  
+    return (
+        <Box sx={{ width: '100%' }}>
+          <Paper sx={{ width: '100%', mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} model={model} data={selected} query={query} setQuery={setQuery} />
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size="medium"
+              >
+                {}
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  onSelectAllClick={(event) => handleSelectAllClick(event, data)}
+                  rowCount={perPage}
+                  data={data}
+                />
+                <TableBody>
+                  {data.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+    
                     return (
-                      <Box sx={{ width: '100%' }}>
-                        <Paper sx={{ width: '100%', mb: 2 }}>
-                          <EnhancedTableToolbar numSelected={selected.length} model={model} data={selected} query={query} setQuery={setQuery} />
-                          <TableContainer>
-                            <Table
-                              sx={{ minWidth: 750 }}
-                              aria-labelledby="tableTitle"
-                              size="medium"
-                            >
-                              {}
-                              <EnhancedTableHead
-                                numSelected={selected.length}
-                                onSelectAllClick={(event) => handleSelectAllClick(event, data)}
-                                rowCount={perPage}
-                                data={data}
-                              />
-                              <TableBody>
-                                {data.map((row, index) => {
-                                  const isItemSelected = isSelected(row.id);
-                                  const labelId = `enhanced-table-checkbox-${index}`;
-                  
-                                  return (
-                                    <TableRow
-                                      hover
-                                      id={toString(row.id)}
-                                      onClick={(event) => handleClick(event, row.id)}
-                                      role="checkbox"
-                                      aria-checked={isItemSelected}
-                                      tabIndex={-1}
-                                      key={row.id}
-                                      selected={isItemSelected}
-                                      sx={{ cursor: 'pointer' }}
-                                    >
-                                      <TableCell padding="checkbox">
-                                        <Checkbox
-                                          color="primary"
-                                          checked={isItemSelected}
-                                          inputProps={{
-                                            'aria-labelledby': labelId,
-                                          }}
-                                        />
-                                      </TableCell>
-                                      {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
-                                      <TableCell><UpdateDialog data={row} model={model}/></TableCell>
-                                      <TableCell><ShowDialog model={model} op_or_subop={row}/></TableCell>
-                                    </TableRow>
-                                  );
-                                })}
-                                
-                              </TableBody>
-                              <TableFooter>
-                                <TableCell></TableCell>
-                              <Pagination
-                                page={page}
-                                count={pages_num}
-                                renderItem={(item) => (
-                                <PaginationItem
-                                component={Link}
-                                to={`${(new URL(window.location.href)).origin}/${model}?page=${item.page}&per_page=${perPage}`}
-                                {...item}
-                                />
-                              )}/>
-                              </TableFooter>
-                            </Table>
-                          </TableContainer>
-                        </Paper>
-                      </Box>
+                      <TableRow
+                        hover
+                        id={toString(row.id)}
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        {Object.keys(row).map((key) => (<TableCell align="center">{row[key]}</TableCell>))} 
+                        <TableCell><UpdateDialog data={row} model={model}/></TableCell>
+                        <TableCell><ShowDialog model={model} op_or_subop={row}/></TableCell>
+                      </TableRow>
                     );
-                }
-            }
-        }       
+                  })}
+                  
+                </TableBody>
+                <TableFooter>
+                  <TableCell></TableCell>
+                <Pagination
+                  page={page}
+                  count={pages_num}
+                  renderItem={(item) => (
+                  <PaginationItem
+                  component={Link}
+                  to={`${(new URL(window.location.href)).origin}/${model}?page=${item.page}&per_page=${perPage}`}
+                  {...item}
+                  />
+                )}/>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Box>
+    );
+      
+}
+
+export default function LoadTable({perPage, page, model}) {
+  const [query, setQuery] = React.useState({});
+  return (
+  <Async promiseFn={() => loadData(perPage, page, model, JSON.stringify(query))}>
+    {({data, error, isLoading}) => {
+              if (isLoading) return 'Loading...';
+              if (error) return `Something went wrong: ${error.message}`;
+              if (data) {
+                return <DataTable data={data} perPage={perPage} page={page} model={model} query={query} setQuery={setQuery}/>
+              }}}
     </Async>
+  );
 }

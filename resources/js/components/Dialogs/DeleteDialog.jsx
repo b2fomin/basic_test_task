@@ -23,9 +23,9 @@ export default function DeleteDialog({model, data}) {
   };
 
   const onSubmit = async (event, force_delete) => {
-      event.preventDefault();      
+      event.preventDefault();
       data.forEach(async (row) => {
-        await axios.delete(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {data: {id: row, force_delete: force_delete}})
+        await axios.delete(`${(new URL(window.location.href)).origin}/api/v1/${model}`, {params: {id: row, force_delete: force_delete}})
         .then((res) => (res.status === 200 ? 
           window.location.href = `${(new URL(window.location.href)).origin}/${model}` 
           : Promise.reject(res)))
